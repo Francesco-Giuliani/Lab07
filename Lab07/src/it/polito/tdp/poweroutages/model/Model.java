@@ -6,7 +6,8 @@ import it.polito.tdp.poweroutages.db.PowerOutageDAO;
 
 public class Model {
 
-	PowerOutageDAO podao;
+	private PowerOutageDAO podao;
+	
 	
 	public Model() {
 		podao = new PowerOutageDAO();
