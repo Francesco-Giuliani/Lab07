@@ -1,33 +1,53 @@
 package it.polito.tdp.poweroutages.db;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import it.polito.tdp.poweroutages.model.PowerOutage;
+import it.polito.tdp.poweroutages.model.bean.Area;
+import it.polito.tdp.poweroutages.model.bean.EventType;
 import it.polito.tdp.poweroutages.model.bean.Nerc;
+import it.polito.tdp.poweroutages.model.bean.Responsible;
+import it.polito.tdp.poweroutages.model.bean.Tag;
 
 public class PowerOutageDAO {
 	
-	/*TODO
-	 * public List<PowerOutage> getAllPowerOutagesc() {
+	 public List<PowerOutage> getAllPowerOutages() {
 
 		
-		//String sql = "SELECT id, value FROM nerc";
-		//List<PowerOutage> powOutList = new ArrayList<>();
+		String sql = "SELECT * FROM poweroutages";
+		
+		List<PowerOutage> powOutList = new ArrayList<>();
 
 		try {
 			Connection conn = ConnectDB.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
-			ResultSet res = st.executeQuery();
+			ResultSet rs = st.executeQuery();
 
-			while (res.next()) {
+			while (rs.next()) {
 				
+				int id = rs.getInt("id");
+				EventType et = this.getEventTypeById(rs.getInt("event_type_id"));
+				Tag tag = this.getTagById(rs.getInt("tag_id"));
+				Area a = this.getAreaById(rs.getInt("area_id"));
+				Nerc n = this.getNercById(rs.getInt("nerc_id"));
+				Responsible r = this.getResponsibleById(rs.getInt("responsible_id"));
+				int ca = rs.getInt("customers_affected");
+				Timestamp dateStart = rs.getTimestamp("date_event_began");
+				Timestamp dateEnd = rs.getTimestamp("date_event_finished");
+				int dl = rs.getInt("demand_loss");
 				
-				PowerOutage po = new PowerOutage();
+				LocalDateTime dateEventStarted = dateStart.toLocalDateTime();
+				LocalDateTime dateEventEnded = dateEnd.toLocalDateTime();
+				
+				PowerOutage po = new PowerOutage(id, et, tag, a, n, r, ca, dateEventStarted, dateEventEnded, dl);
 				powOutList.add(po);
 			}
 
@@ -38,7 +58,7 @@ public class PowerOutageDAO {
 		}
 
 		return powOutList;
-	}*/
+	}
 
 
 	public List<Nerc> getNercList() {
@@ -65,9 +85,9 @@ public class PowerOutageDAO {
 		return nercList;
 	}
 	
-	public String getNercById(int id){
-		String res = null;
-		String sql = "SELECT value FROM nerc WHERE id = ?";
+	public Nerc getNercById(int id){
+		Nerc res = null;
+		String sql = "SELECT id, value FROM nerc WHERE id = ?";
 		
 		try {
 			Connection conn = ConnectDB.getConnection();
@@ -76,7 +96,7 @@ public class PowerOutageDAO {
 			ResultSet rs = st.executeQuery();
 			
 			while(rs.next()) {
-				res = rs.getString("value");
+				res = new Nerc(rs.getInt("id"), rs.getString("value"));
 			}
 			
 			conn.close();			
@@ -84,13 +104,12 @@ public class PowerOutageDAO {
 			System.out.println("Errore DB");
 			throw new RuntimeException(sqle);
 		}
-		
 		return res;
 	}
 
-	public String getAreaById(int id){
-		String res = null;
-		String sql = "SELECT value FROM area WHERE id = ?";
+	public Area getAreaById(int id){
+		Area res = null;
+		String sql = "SELECT id, value FROM nerc WHERE id = ?";
 		
 		try {
 			Connection conn = ConnectDB.getConnection();
@@ -99,7 +118,7 @@ public class PowerOutageDAO {
 			ResultSet rs = st.executeQuery();
 			
 			while(rs.next()) {
-				res = rs.getString("value");
+				res = new Area(rs.getInt("id"), rs.getString("value"));
 			}
 			
 			conn.close();			
@@ -107,13 +126,34 @@ public class PowerOutageDAO {
 			System.out.println("Errore DB");
 			throw new RuntimeException(sqle);
 		}
+		return res;
+		}
+	
+	public Responsible getResponsibleById(int id){
+		Responsible res = null;
+		String sql = "SELECT id, value FROM nerc WHERE id = ?";
 		
+		try {
+			Connection conn = ConnectDB.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, id);
+			ResultSet rs = st.executeQuery();
+			
+			while(rs.next()) {
+				res = new Responsible(rs.getInt("id"), rs.getString("value"));
+			}
+			
+			conn.close();			
+		}catch(SQLException sqle) {
+			System.out.println("Errore DB");
+			throw new RuntimeException(sqle);
+		}
 		return res;
 	}
 	
-	public String getResponsibleById(int id){
-		String res = null;
-		String sql = "SELECT value FROM responsible WHERE id = ?";
+	public Tag getTagById(int id){
+		Tag res = null;
+		String sql = "SELECT id, value FROM nerc WHERE id = ?";
 		
 		try {
 			Connection conn = ConnectDB.getConnection();
@@ -122,7 +162,7 @@ public class PowerOutageDAO {
 			ResultSet rs = st.executeQuery();
 			
 			while(rs.next()) {
-				res = rs.getString("value");
+				res = new Tag(rs.getInt("id"), rs.getString("value"));
 			}
 			
 			conn.close();			
@@ -130,13 +170,12 @@ public class PowerOutageDAO {
 			System.out.println("Errore DB");
 			throw new RuntimeException(sqle);
 		}
-		
 		return res;
 	}
 	
-	public String getTagById(int id){
-		String res = null;
-		String sql = "SELECT value FROM tag WHERE id = ?";
+	public EventType getEventTypeById(int id){
+		EventType res = null;
+		String sql = "SELECT id, value FROM nerc WHERE id = ?";
 		
 		try {
 			Connection conn = ConnectDB.getConnection();
@@ -145,7 +184,7 @@ public class PowerOutageDAO {
 			ResultSet rs = st.executeQuery();
 			
 			while(rs.next()) {
-				res = rs.getString("value");
+				res = new EventType(rs.getInt("id"), rs.getString("value"));
 			}
 			
 			conn.close();			
@@ -153,30 +192,6 @@ public class PowerOutageDAO {
 			System.out.println("Errore DB");
 			throw new RuntimeException(sqle);
 		}
-		
-		return res;
-	}
-	
-	public String getEventTypeById(int id){
-		String res = null;
-		String sql = "SELECT value FROM eventtype WHERE id = ?";
-		
-		try {
-			Connection conn = ConnectDB.getConnection();
-			PreparedStatement st = conn.prepareStatement(sql);
-			st.setInt(1, id);
-			ResultSet rs = st.executeQuery();
-			
-			while(rs.next()) {
-				res = rs.getString("value");
-			}
-			
-			conn.close();			
-		}catch(SQLException sqle) {
-			System.out.println("Errore DB");
-			throw new RuntimeException(sqle);
-		}
-		
 		return res;
 	}
 

@@ -4,34 +4,67 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.temporal.TemporalAmount;
+import it.polito.tdp.poweroutages.model.bean.*;
 
 import it.polito.tdp.poweroutages.db.PowerOutageDAO;
 
 public class PowerOutage {
 	
-	private LocalDateTime powerOutStart;
-	private LocalDateTime powerOutEnd;
-	private int affectedPeople;
+	private int id;
+	private EventType eventType;
+	private Tag tag;
+	private Area area;
+	private Nerc nerc;
+	private Responsible responsible;
+	private int costumersAffected;
+	private LocalDateTime dateEventBegan;
+	private LocalDateTime dateEventEnded;
+	private int demandLoss;
+	
 	private int year;
 	private long hours;
-	private PowerOutageDAO powerOutageDAO = new PowerOutageDAO();
+	private PowerOutageDAO powerOutageDAO = new PowerOutageDAO();	
 	
-	public PowerOutage(LocalDateTime powerOutStart, LocalDateTime powerOutEnd, int affectedPeople) {
-		this.powerOutStart = powerOutStart;
-		this.powerOutEnd = powerOutEnd;
-		this.affectedPeople = affectedPeople;
-		this.year = this.powerOutStart.getYear();
-		Duration d= Duration.between(this.powerOutStart, this.powerOutEnd) ;
+	public PowerOutage(int id, EventType eventType, Tag tag, Area area, Nerc nerc, Responsible responsible,
+			int costumersAffected, LocalDateTime dateEventBegan, LocalDateTime dateEventEnded, int demandLoss) {
+		this.setId(id);
+		this.eventType = eventType;
+		this.tag = tag;
+		this.area = area;
+		this.nerc = nerc;
+		this.responsible = responsible;
+		this.costumersAffected = costumersAffected;
+		this.dateEventBegan = dateEventBegan;
+		this.dateEventEnded = dateEventEnded;
+		this.demandLoss = demandLoss;
+		
+		Duration d= Duration.between(this.dateEventBegan, this.dateEventEnded) ;
 		this.hours = d.toHours();
+		this.year = this.dateEventBegan.getYear();
+	}
+
+	/*public PowerOutage(LocalDateTime powerOutStart, LocalDateTime powerOutEnd, int affectedPeople) {
+		this.dateEventBegan = powerOutStart;
+		this.dateEventEnded = powerOutEnd;
+		this.affectedPeople = affectedPeople;
+		this.year = this.dateEventBegan.getYear();
+		Duration d= Duration.between(this.dateEventBegan, this.dateEventEnded) ;
+		this.hours = d.toHours();
+	}*/
+	
+	
+
+	
+	@Override
+	public String toString() {
+		return year+", " +dateEventBegan+", "+dateEventEnded+", "+ hours+ ", " +this.costumersAffected;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + affectedPeople;
-		result = prime * result + ((powerOutEnd == null) ? 0 : powerOutEnd.hashCode());
-		result = prime * result + ((powerOutStart == null) ? 0 : powerOutStart.hashCode());
+		result = prime * result + getId();
 		return result;
 	}
 
@@ -44,24 +77,17 @@ public class PowerOutage {
 		if (getClass() != obj.getClass())
 			return false;
 		PowerOutage other = (PowerOutage) obj;
-		if (affectedPeople != other.affectedPeople)
-			return false;
-		if (powerOutEnd == null) {
-			if (other.powerOutEnd != null)
-				return false;
-		} else if (!powerOutEnd.equals(other.powerOutEnd))
-			return false;
-		if (powerOutStart == null) {
-			if (other.powerOutStart != null)
-				return false;
-		} else if (!powerOutStart.equals(other.powerOutStart))
+		if (getId() != other.getId())
 			return false;
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		return year+", " +powerOutStart+", "+powerOutEnd+", "+ hours+ ", " +affectedPeople;
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	
