@@ -3,6 +3,7 @@ package it.polito.tdp.poweroutages.model;
 import java.util.List;
 
 import it.polito.tdp.poweroutages.db.PowerOutageDAO;
+import it.polito.tdp.poweroutages.model.bean.Nerc;
 
 public class Model {
 

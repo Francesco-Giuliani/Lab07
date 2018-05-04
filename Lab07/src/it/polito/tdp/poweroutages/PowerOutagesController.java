@@ -1,5 +1,6 @@
 package it.polito.tdp.poweroutages;
 
+import it.polito.tdp.poweroutages.exceptions.EmptyFieldException;
 import it.polito.tdp.poweroutages.model.*;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -38,7 +39,32 @@ public class PowerOutagesController {
 
     @FXML
     void HandleWorstcaseAnalysis(ActionEvent event) {
-
+    	
+    	this.txtResult.clear();
+    	
+    	String yearSpanStr = this.txtMaxYears.getText() , maxHourDurationStr = this.txtHours.getText();
+    	int yearSpan, maxHourDuration;
+    	
+    	try {
+    		if(yearSpanStr == null || maxHourDurationStr == null)
+    			throw new EmptyFieldException();
+    		
+    		yearSpan = Integer.parseInt(yearSpanStr);
+    		maxHourDuration = Integer.parseInt(maxHourDurationStr);
+    		
+    	
+    		
+    	}catch(EmptyFieldException efe) {
+    		efe.printStackTrace();
+    		this.txtResult.appendText("Ci sono dei campi vuoti. Compilare correttamente tutti i campi richiesti. \n");
+    		return;
+    	}catch(NumberFormatException nfe) {
+    		nfe.printStackTrace();
+    		this.txtResult.appendText("Valori inseriti errati. Inserire interi nei campi ore e anni. \n");
+    		return;
+    	}
+    		
+    	
     }
 
     @FXML

@@ -1,4 +1,4 @@
-package it.polito.tdp.poweroutages.model;
+package it.polito.tdp.poweroutages.model.bean;
 
 public class Nerc {
 
