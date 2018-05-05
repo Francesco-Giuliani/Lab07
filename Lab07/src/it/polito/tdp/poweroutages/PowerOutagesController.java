@@ -2,6 +2,8 @@ package it.polito.tdp.poweroutages;
 
 import it.polito.tdp.poweroutages.exceptions.EmptyFieldException;
 import it.polito.tdp.poweroutages.model.*;
+import it.polito.tdp.poweroutages.model.bean.Nerc;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -23,7 +25,7 @@ public class PowerOutagesController {
     private URL location;
 
     @FXML
-    private ChoiceBox<?> chcBxNERC;
+    private ChoiceBox<Nerc> chcBxNERC;
 
     @FXML
     private TextField txtMaxYears;
@@ -44,15 +46,17 @@ public class PowerOutagesController {
     	
     	String yearSpanStr = this.txtMaxYears.getText() , maxHourDurationStr = this.txtHours.getText();
     	int yearSpan, maxHourDuration;
+    	Nerc nerc = this.chcBxNERC.getValue();
     	
     	try {
-    		if(yearSpanStr == null || maxHourDurationStr == null)
+    		if(yearSpanStr == null || maxHourDurationStr == null || nerc == null)
     			throw new EmptyFieldException();
     		
     		yearSpan = Integer.parseInt(yearSpanStr);
     		maxHourDuration = Integer.parseInt(maxHourDurationStr);
     		
-    	
+    		AnalysisResult res = model.worstCaseAnalysis(nerc, yearSpan, maxHourDuration);
+    		this.txtResult.appendText(res.toString());
     		
     	}catch(EmptyFieldException efe) {
     		efe.printStackTrace();
@@ -79,5 +83,6 @@ public class PowerOutagesController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	this.chcBxNERC.getItems().setAll(this.model.getNercList());
     }
 }

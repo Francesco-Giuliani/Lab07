@@ -89,6 +89,14 @@ public class PowerOutage {
 	public void setId(int id) {
 		this.id = id;
 	}
+
+	public int getAffectedCustomers() {
+		return this.costumersAffected;
+	}
+
+	public long getHours() {
+		return this.hours;
+	}
 	
 	
 	

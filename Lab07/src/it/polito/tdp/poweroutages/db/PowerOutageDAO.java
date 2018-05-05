@@ -20,8 +20,7 @@ import it.polito.tdp.poweroutages.model.bean.Tag;
 public class PowerOutageDAO {
 	
 	 public List<PowerOutage> getAllPowerOutages() {
-
-		
+		 
 		String sql = "SELECT * FROM poweroutages";
 		
 		List<PowerOutage> powOutList = new ArrayList<>();
@@ -61,7 +60,47 @@ public class PowerOutageDAO {
 	}
 
 
-	public List<Nerc> getNercList() {
+	 public List<PowerOutage> getPowerOutagesByNerc(Nerc nerc) {
+		 String sql = "SELECT * FROM poweroutages WHERE nerc_id = ? ";
+			
+			List<PowerOutage> powOutList = new ArrayList<>();
+
+			try {
+				Connection conn = ConnectDB.getConnection();
+				PreparedStatement st = conn.prepareStatement(sql);
+				st.setInt(1, nerc.getId());
+				ResultSet rs = st.executeQuery();
+
+				while (rs.next()) {
+					
+					int id = rs.getInt("id");
+					EventType et = this.getEventTypeById(rs.getInt("event_type_id"));
+					Tag tag = this.getTagById(rs.getInt("tag_id"));
+					Area a = this.getAreaById(rs.getInt("area_id"));
+					Nerc n = this.getNercById(rs.getInt("nerc_id")); //MIGLIORABILE? metto copie del nerc appena usato
+					Responsible r = this.getResponsibleById(rs.getInt("responsible_id"));
+					int ca = rs.getInt("customers_affected");
+					Timestamp dateStart = rs.getTimestamp("date_event_began");
+					Timestamp dateEnd = rs.getTimestamp("date_event_finished");
+					int dl = rs.getInt("demand_loss");
+					
+					LocalDateTime dateEventStarted = dateStart.toLocalDateTime();
+					LocalDateTime dateEventEnded = dateEnd.toLocalDateTime();
+					
+					PowerOutage po = new PowerOutage(id, et, tag, a, n, r, ca, dateEventStarted, dateEventEnded, dl);
+					powOutList.add(po);
+				}
+
+				conn.close();
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+
+			return powOutList;
+	}
+
+	 public List<Nerc> getNercList() {
 
 		String sql = "SELECT id, value FROM nerc";
 		List<Nerc> nercList = new ArrayList<>();
@@ -195,4 +234,8 @@ public class PowerOutageDAO {
 		return res;
 	}
 
+
+
+	
+	
 }
