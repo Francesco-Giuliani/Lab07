@@ -97,6 +97,50 @@ public class PowerOutage {
 	public long getHours() {
 		return this.hours;
 	}
+
+	public EventType getEventType() {
+		return eventType;
+	}
+
+	public Tag getTag() {
+		return tag;
+	}
+
+	public Area getArea() {
+		return area;
+	}
+
+	public Nerc getNerc() {
+		return nerc;
+	}
+
+	public Responsible getResponsible() {
+		return responsible;
+	}
+
+	public int getCostumersAffected() {
+		return costumersAffected;
+	}
+
+	public LocalDateTime getDateEventBegan() {
+		return dateEventBegan;
+	}
+
+	public LocalDateTime getDateEventEnded() {
+		return dateEventEnded;
+	}
+
+	public int getDemandLoss() {
+		return demandLoss;
+	}
+
+	public int getYear() {
+		return year;
+	}
+
+	public PowerOutageDAO getPowerOutageDAO() {
+		return powerOutageDAO;
+	}
 	
 	
 	

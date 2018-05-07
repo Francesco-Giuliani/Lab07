@@ -29,17 +29,36 @@ public class Model {
 		int level = 0;
 		int maxLevel = available.size();
 		
-		this.recursive(maxYears, maxHours, maxLevel, level, partial, available);
+		this.recursive(maxLevel, level, partial, available);
 		
 		
 		AnalysisResult analysisResult = new AnalysisResult(this.worstCaseResult);
 		return analysisResult;
 	}
 
-	private void recursive(int maxYears, int maxHours, int maxLevel, int level, PowerOutagesCombination partial,
-			List<PowerOutage> available) {
+	private void recursive(int maxLevel, int level, PowerOutagesCombination partial, List<PowerOutage> available) {
 		
-		if(level >= maxLevel || partial.getTotHours()) //condizione diterminazione
+		if(level >= maxLevel && partial.sumHours()<=partial.getMaxHours()) { //condizione diterminazione
+			this.powOutCombinationList.add(new PowerOutagesCombination(partial));
+			return;
+		}
+		
+		if(partial.sumHours() > partial.getMaxHours()) {
+			return;
+		}
+		
+		List<PowerOutage> av = new ArrayList<>(available);
+		
+		for(PowerOutage po: av) {
+			if(partial.canInsertYears(po)) {
+				partial.add(po);
+				av.remove(po);
+				this.recursive(maxLevel, level+1, partial, av);
+				partial.remove(po);
+				av.add(po);
+			}
+		}
+			
 		
 	}
 
