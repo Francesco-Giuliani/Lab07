@@ -1,3 +1,4 @@
+	
 package it.polito.tdp.poweroutages.model;
 
 import java.util.ArrayList;
