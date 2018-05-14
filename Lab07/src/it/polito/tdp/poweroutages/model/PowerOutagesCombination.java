@@ -1,5 +1,7 @@
 package it.polito.tdp.poweroutages.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -15,10 +17,10 @@ public class PowerOutagesCombination {
 	private int customersAffected; 
 	
 	public PowerOutagesCombination(long maxYearSpan, long maxHours) {
-		super();
 		this.powOutCombination = new LinkedList<>();
 		this.maxYearSpan = maxYearSpan;
 		this.maxHours = maxHours;
+		this.customersAffected =0;
 	}
 
 	
@@ -45,6 +47,10 @@ public class PowerOutagesCombination {
 	}
 
 	public int getCustomersAffected() {
+		this.customersAffected =0;
+		for(PowerOutage po: this.powOutCombination)
+			this.customersAffected += po.getAffectedCustomers();
+		
 		return customersAffected;
 	}
 
@@ -60,16 +66,53 @@ public class PowerOutagesCombination {
 
 
 	public boolean canInsertYears(PowerOutage po) {
-		Collections.sort(this.powOutCombination, new DateComparator());
-		PowerOutage first = this.powOutCombination.get(0);
-		PowerOutage last = this.powOutCombination.get(this.powOutCombination.size()-1);
+		if(this.powOutCombination.size()==0)
+			return true;
+		if(this.powOutCombination.size()==1) {
+			if(Math.abs(this.powOutCombination.get(0).getDateEventBegan().getYear() - po.getDateEventBegan().getYear())<=this.maxYearSpan) {
+					return true;
+				}else {
+					return false;
+				}
+		}else {
 		
-		if(po.getDateEventBegan().compareTo())
+			Collections.sort(this.powOutCombination, new DateComparator());
+			LocalDateTime first = this.powOutCombination.get(0).getDateEventBegan();
+			LocalDateTime last = this.powOutCombination.get(this.powOutCombination.size()-1).getDateEventBegan();
+			LocalDateTime current = po.getDateEventBegan();
+			
+			if(current.isAfter(first) && current.isBefore(last))
+				return true;
+			if(current.isAfter(first) && (current.getYear()-first.getYear())<=this.maxYearSpan )
+				return true;
+			if(current.isBefore(last) && (last.getYear()-current.getYear())<=this.maxYearSpan)
+				return true;
+			}
 		
 		return false;
 	}
-	
 
+
+
+	public void add(PowerOutage po) {
+		this.powOutCombination.add(po);
+	}
+
+
+
+	public void remove(PowerOutage po) {
+		this.powOutCombination.remove(po);
+		
+	}
+
+
+
+	@Override
+	public String toString() {
+		return powOutCombination.toString() +"\n AFFECTED: " + this.getCustomersAffected()+"\n";
+	}
+	
+	
 	
 	
 	

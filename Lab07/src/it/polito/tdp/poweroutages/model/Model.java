@@ -1,21 +1,22 @@
 package it.polito.tdp.poweroutages.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import it.polito.tdp.poweoutages.comparators.CombByAffectedCustomersComparator;
 import it.polito.tdp.poweroutages.db.PowerOutageDAO;
 import it.polito.tdp.poweroutages.model.bean.Nerc;
 
 public class Model {
 
 	private PowerOutageDAO powOutDAO;
-	private List<PowerOutage> worstCaseResult;
 	private List<PowerOutagesCombination> powOutCombinationList;
 	private PowerOutagesCombination worst;
 	
 	public Model() {
 		powOutDAO = new PowerOutageDAO();
-		this.worstCaseResult = new ArrayList<>();
+		this.powOutCombinationList = new ArrayList<>();
 	}
 	
 	public List<Nerc> getNercList() {
@@ -31,8 +32,9 @@ public class Model {
 		
 		this.recursive(maxLevel, level, partial, available);
 		
+		this.worst= this.getCombWithMaxCustomers();
 		
-		AnalysisResult analysisResult = new AnalysisResult(this.worstCaseResult);
+		AnalysisResult analysisResult = new AnalysisResult(this.worst.getPowOutCombination());
 		return analysisResult;
 	}
 
@@ -49,7 +51,7 @@ public class Model {
 		
 		List<PowerOutage> av = new ArrayList<>(available);
 		
-		for(PowerOutage po: av) {
+		for(PowerOutage po: available) {
 			if(partial.canInsertYears(po)) {
 				partial.add(po);
 				av.remove(po);
@@ -60,6 +62,15 @@ public class Model {
 		}
 			
 		
+	}
+	
+	private PowerOutagesCombination getCombWithMaxCustomers() {
+		PowerOutagesCombination res = null;
+		
+		Collections.sort(this.powOutCombinationList, new CombByAffectedCustomersComparator());
+		res = this.powOutCombinationList.get(this.powOutCombinationList.size()-1);
+		
+		return res;
 	}
 
 }

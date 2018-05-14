@@ -57,7 +57,7 @@ public class PowerOutage {
 	
 	@Override
 	public String toString() {
-		return year+", " +dateEventBegan+", "+dateEventEnded+", "+ hours+ ", " +this.costumersAffected;
+		return year+", " +dateEventBegan+", "+dateEventEnded+", "+ hours+ ", " +this.costumersAffected+"\n";
 	}
 
 	@Override

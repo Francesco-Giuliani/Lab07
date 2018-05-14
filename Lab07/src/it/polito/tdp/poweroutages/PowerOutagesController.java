@@ -28,6 +28,9 @@ public class PowerOutagesController {
     private ChoiceBox<Nerc> chcBxNERC;
 
     @FXML
+    private TextField txtMaxHours;
+    
+    @FXML
     private TextField txtMaxYears;
 
     @FXML
@@ -44,9 +47,10 @@ public class PowerOutagesController {
     	
     	this.txtResult.clear();
     	
-    	String yearSpanStr = this.txtMaxYears.getText() , maxHourDurationStr = this.txtHours.getText();
-    	int yearSpan, maxHourDuration;
+    	String yearSpanStr = this.txtMaxYears.getText() , maxHourDurationStr = this.txtMaxHours.getText();
+    	int yearSpan = 0, maxHourDuration=0;
     	Nerc nerc = this.chcBxNERC.getValue();
+
     	
     	try {
     		if(yearSpanStr == null || maxHourDurationStr == null || nerc == null)
@@ -54,6 +58,7 @@ public class PowerOutagesController {
     		
     		yearSpan = Integer.parseInt(yearSpanStr);
     		maxHourDuration = Integer.parseInt(maxHourDurationStr);
+
     		
     		AnalysisResult res = model.worstCaseAnalysis(nerc, yearSpan, maxHourDuration);
     		this.txtResult.appendText(res.toString());
@@ -61,6 +66,7 @@ public class PowerOutagesController {
     	}catch(EmptyFieldException efe) {
     		efe.printStackTrace();
     		this.txtResult.appendText("Ci sono dei campi vuoti. Compilare correttamente tutti i campi richiesti. \n");
+    		this.txtResult.appendText("yearSpan: "+yearSpan);
     		return;
     	}catch(NumberFormatException nfe) {
     		nfe.printStackTrace();
@@ -75,6 +81,7 @@ public class PowerOutagesController {
     void initialize() {
         assert chcBxNERC != null : "fx:id=\"chcBxNERC\" was not injected: check your FXML file 'PowerOutages.fxml'.";
         assert txtMaxYears != null : "fx:id=\"txtMaxYears\" was not injected: check your FXML file 'PowerOutages.fxml'.";
+        assert txtMaxHours != null : "fx:id=\"txtMaxHours\" was not injected: check your FXML file 'PowerOutages.fxml'.";
         assert txtHours != null : "fx:id=\"txtHours\" was not injected: check your FXML file 'PowerOutages.fxml'.";
         assert btnWorstCaseAnalysis != null : "fx:id=\"btnWorstCaseAnalysis\" was not injected: check your FXML file 'PowerOutages.fxml'.";
         assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'PowerOutages.fxml'.";
