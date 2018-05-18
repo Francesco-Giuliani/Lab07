@@ -1,0 +1,21 @@
+RICORSIONE ANALISI:
+
+OBIETTIVO: trovare la combinazione di PowerOutages:
+	- dato un certo Nerc 
+	- tale da massimizzare la somma totale di CUSTOMERS AFFECTED
+	- con una durata in ore totale inferiore al massimo specificato
+	- con una distanza in anni massima pari al valore specificato
+	
+CASO TERMINALE:
+	- non esistono altri power outages tra i rimanenti da aggiingere tali che, se aggiunti alla lista, non 
+		farebbero sforare la somma di ore totali massima
+		
+VALIDITA:
+	- la distanza in anni tra l'evento più recente e il più remoto è minore del massimo specificato
+	
+LIVELLO:
+	
+	- la somma delle ore dei vari eventi componenti la combinazione
+	
+
+	
